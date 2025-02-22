@@ -1,7 +1,11 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+
+const httpLink = new HttpLink({
+  uri: "https://take-home-be.onrender.com/api",
+});
 
 const client = new ApolloClient({
-  uri: "https://take-home-be.onrender.com/api",
+  link: httpLink,
   cache: new InMemoryCache(),
 });
 
