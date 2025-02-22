@@ -1,19 +1,13 @@
-import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+import { ApolloClient, InMemoryCache, HttpLink, from } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import Cookies from "js-cookie";
 
 const httpLink = new HttpLink({
   uri: "https://take-home-be.onrender.com/api",
 });
 
-const authLink = setContext(async (_, { headers }) => {
-  const token =
-    typeof window !== "undefined"
-      ? document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("visitorToken="))
-          ?.split("=")[1]
-      : null;
-
+const authLink = setContext((_, { headers }) => {
+  const token = Cookies.get("token");
   return {
     headers: {
       ...headers,
@@ -23,7 +17,7 @@ const authLink = setContext(async (_, { headers }) => {
 });
 
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: from([authLink, httpLink]),
   cache: new InMemoryCache(),
 });
 

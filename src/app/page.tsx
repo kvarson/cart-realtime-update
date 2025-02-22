@@ -1,19 +1,23 @@
 "use client";
-import { useMutation } from "@apollo/client";
-import { REGISTER_MUTATION } from "@/graphql/mutations";
-import { useState } from "react";
 
+import { useMutation } from "@apollo/client";
+import Cookies from "js-cookie";
+import { REGISTER_MUTATION } from "@/graphql/mutations";
+import { Button } from "@/components/ui/button";
 const RegisterPage = () => {
   const [register, { data, loading, error }] = useMutation(REGISTER_MUTATION);
-  const [token, setToken] = useState<string | null>(null);
 
   const handleRegister = async () => {
     try {
       const response = await register();
       if (response.data) {
         const { token } = response.data.register;
-        setToken(token);
-        localStorage.setItem("token", token);
+
+        Cookies.set("token", token, {
+          expires: 7,
+          secure: true,
+          sameSite: "strict",
+        });
       }
     } catch (err) {
       console.error("Error during registration:", err);
