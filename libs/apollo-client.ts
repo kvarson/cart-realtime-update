@@ -1,23 +1,11 @@
-import { ApolloClient, InMemoryCache, HttpLink, from } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
-import Cookies from "js-cookie";
+import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
 const httpLink = new HttpLink({
   uri: "https://take-home-be.onrender.com/api",
 });
 
-const authLink = setContext((_, { headers }) => {
-  const token = Cookies.get("token");
-  return {
-    headers: {
-      ...headers,
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-  };
-});
-
 const client = new ApolloClient({
-  link: from([authLink, httpLink]),
+  link: httpLink,
   cache: new InMemoryCache(),
 });
 
