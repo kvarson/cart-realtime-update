@@ -26,10 +26,10 @@ const RegisterPage = () => {
 
   return (
     <div>
-      <h1>Register</h1>
-      <button onClick={handleRegister} disabled={loading}>
+      <h1 className='text-red-500'>Register</h1>
+      <Button onClick={handleRegister} disabled={loading}>
         {loading ? "Registering..." : "Register"}
-      </button>
+      </Button>
       {error && <p>Error: {error.message}</p>}
       {data && <p>Registration Successful! Token: {data.register.token}</p>}
     </div>

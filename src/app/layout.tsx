@@ -3,6 +3,8 @@
 import { ApolloProvider } from "@apollo/client";
 import client from "../../libs/apollo-client";
 
+import "./globals.css";
+
 export default function RootLayout({
   children,
 }: {
