@@ -7,7 +7,7 @@ const httpLink = new HttpLink({
 });
 
 const authLink = setContext(async (_, { headers }) => {
-  const token = Cookies.get("token"); // Get token from cookies
+  const token = Cookies.get("token");
   return {
     headers: {
       ...headers,

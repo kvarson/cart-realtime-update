@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { cartAddItemSchema } from "@/app/validations/validation"; // Import your schema
+import { cartAddItemSchema } from "@/app/validations/validation";
 import { AddToCartProps } from "@/types/interfaces";
+import { useCart } from "@/app/cartStateManagement/CartContext";
 
 const AddToCartButton: React.FC<AddToCartProps> = ({
   productId,
   availableQuantity,
 }) => {
   const [error, setError] = useState<string | null>(null);
-
+  const { addToCart, cart } = useCart();
   const handleAddToCart = () => {
     const validationResult = cartAddItemSchema.safeParse({
       productId,
@@ -22,7 +23,8 @@ const AddToCartButton: React.FC<AddToCartProps> = ({
     }
 
     setError(null);
-
+    addToCart(productId, availableQuantity);
+    console.log(cart, ":CARTTTT");
     console.log("Adding to cart:", { productId, availableQuantity });
   };
 
