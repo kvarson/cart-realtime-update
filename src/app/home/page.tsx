@@ -8,6 +8,7 @@ import { GET_PRODUCTS } from "@/graphql/queries";
 import { useEffect, useState } from "react";
 import { GetProductsData, Product } from "@/types/interfaces";
 import Navigation from "@/reusableComponents/navigation";
+import AddToCartButton from "@/reusableComponents/addToCartButton";
 export default function Home() {
   const { data, loading, error } = useQuery<GetProductsData>(GET_PRODUCTS);
   const [products, setProducts] = useState<Product[]>([]);
@@ -38,7 +39,12 @@ export default function Home() {
                 <p>Cost: ${product.cost}</p>
                 <p>Available: {product.availableQuantity}</p>
                 <p>Status: {product.isArchived ? "Archived" : "Active"}</p>
-                <Button>Add To Cart</Button>
+                <AddToCartButton
+                  productId={product._id}
+                  availableQuantity={product.availableQuantity}
+                >
+                  Add To Cart
+                </AddToCartButton>
               </CardContent>
             </Card>
           ))}

@@ -14,3 +14,7 @@ export interface GetProductsData {
     total: number;
   };
 }
+export interface AddToCartProps {
+  productId: string;
+  availableQuantity: number;
+}
