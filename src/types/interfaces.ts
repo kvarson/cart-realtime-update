@@ -17,4 +17,5 @@ export interface GetProductsData {
 export interface AddToCartProps {
   productId: string;
   availableQuantity: number;
+  children?: React.ReactNode;
 }
