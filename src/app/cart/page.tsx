@@ -12,15 +12,18 @@ import Navigation from "@/reusableComponents/navigation";
 const CartPage: React.FC = () => {
   const { cart, removeFromCart, updateCartItemQuantity, loading } = useCart();
   const [error, setError] = useState<string | null>(null);
+
+  const [loadingRemove, setLoadingRemove] = useState(false);
   const [deleteValidationError, setDeleteValidationError] = useState<
     string | null
   >(null);
   const [updateValidationError, setUpdateValidationError] = useState<
     string | null
   >(null);
-  const handleRemoveItem = (cartItemId: string) => {
+  const handleRemoveItem = async (cartItemId: string) => {
     try {
-      //neeeds refactoring
+      setLoadingRemove(true);
+
       const validationResult = cartRemoveItemSchema.safeParse({
         cartItemId,
       });
@@ -28,9 +31,11 @@ const CartPage: React.FC = () => {
         setDeleteValidationError(validationResult.error.errors[0].message);
         return;
       }
-      removeFromCart(cartItemId);
+      await removeFromCart(cartItemId);
+      setLoadingRemove(false);
     } catch (error) {
       console.log(error);
+      setLoadingRemove(false);
       setError("Failed to remove item");
     }
   };
@@ -109,7 +114,7 @@ const CartPage: React.FC = () => {
                     {item.product?.cost.toFixed(2)} USD
                   </p>
                   <p className='text-gray-400'>
-                    {item.product.availableQuantity} in stock
+                    {item.product?.availableQuantity} in stock
                   </p>
                 </div>
               </div>
@@ -171,6 +176,7 @@ const CartPage: React.FC = () => {
                 )}
                 <Button
                   className='px-3 py-1 bg-red-500 text-white rounded-md'
+                  disabled={loadingRemove}
                   onClick={() => handleRemoveItem(item._id)}
                 >
                   Remove

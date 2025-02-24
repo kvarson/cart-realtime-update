@@ -28,7 +28,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       setCart(data.getCart);
     }
     console.log(data, "DATA");
-  }, [data]);
+  }, [cart?.items, data]);
 
   const addToCart = async (
     productId: string,
@@ -62,7 +62,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         setCart(data.removeItem);
       }
     } catch (error) {
-      console.error("Error removing item:", error);
+      console.log("Error removing item:", error);
     }
   };
   const updateCartItemQuantity = async (
