@@ -1,52 +1,24 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
 export async function middleware(req: NextRequest) {
-  let token = req.cookies.get("token")?.value || "";
+  const { pathname } = req.nextUrl;
 
-  if (!token) {
-    try {
-      const res = await fetch("https://take-home-be.onrender.com/api", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+  if (pathname.startsWith("/api/graphql")) {
+    const token = req.cookies.get("token")?.value;
 
-      if (!res.ok) throw new Error("Failed to fetch token");
-
-      const data = await res.json();
-      token = data.token;
-
-      // Store token in an HTTP-only cookie
-      console.log();
-      const response = NextResponse.next();
-      response.cookies.set("token", token, {
-        httpOnly: true,
-        path: "/",
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-      });
-
-      return response;
-    } catch (error) {
-      console.error("Middleware Error:", error);
-      return NextResponse.json(
-        { error: "Authentication failed" },
-        { status: 401 }
-      );
+    if (!token) {
+      return NextResponse.redirect(new URL("/", req.url));
     }
+
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set("Authorization", `Bearer ${token}`);
+
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
   }
 
-  const requestHeaders = new Headers(req.headers);
-
-  requestHeaders.set("Authorization", `Bearer ${token}`);
-
-  return NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
+  return NextResponse.next();
 }
-
-export const config = {
-  matcher: "/:path*",
-};
