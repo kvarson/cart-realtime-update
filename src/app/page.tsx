@@ -6,8 +6,10 @@ import { REGISTER_MUTATION } from "@/graphql/mutations";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import { useAuth } from "./stateManagement/AuthContext";
 const RegisterPage = () => {
   const [register, { data, loading, error }] = useMutation(REGISTER_MUTATION);
+  const { setIsRegistered } = useAuth();
   const router = useRouter();
   const handleRegister = async () => {
     try {
@@ -20,6 +22,9 @@ const RegisterPage = () => {
           secure: true,
           sameSite: "strict",
         });
+
+        //this sets up the registered auth state, for cart to skip the getCart query before i get the token.
+        setIsRegistered(true);
       }
       router.push("/home");
     } catch (err) {

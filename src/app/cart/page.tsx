@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useCart } from "../cartStateManagement/CartContext"; // Adjust the import path as needed
+import { useCart } from "../stateManagement/CartContext"; // Adjust the import path as needed
 import { CartItem } from "@/types/interfaces";
 import {
   cartRemoveItemSchema,

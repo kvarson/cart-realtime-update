@@ -3,7 +3,8 @@
 import { ApolloProvider } from "@apollo/client";
 import client from "../../libs/apollo-client";
 import "./globals.css";
-import { CartProvider } from "./cartStateManagement/CartContext";
+import { CartProvider } from "./stateManagement/CartContext";
+import { AuthProvider } from "./stateManagement/AuthContext";
 
 export default function RootLayout({
   children,
@@ -14,7 +15,9 @@ export default function RootLayout({
     <html lang='en'>
       <body>
         <ApolloProvider client={client}>
-          <CartProvider>{children}</CartProvider>
+          <AuthProvider>
+            <CartProvider>{children}</CartProvider>
+          </AuthProvider>
         </ApolloProvider>
         ;
       </body>

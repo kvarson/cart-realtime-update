@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cartAddItemSchema } from "@/app/validations/validation";
 import { AddToCartProps } from "@/types/interfaces";
-import { useCart } from "@/app/cartStateManagement/CartContext";
+import { useCart } from "@/app/stateManagement/CartContext";
 
 const AddToCartButton: React.FC<AddToCartProps> = ({ productId, quantity }) => {
   const [error, setError] = useState<string | null>(null);

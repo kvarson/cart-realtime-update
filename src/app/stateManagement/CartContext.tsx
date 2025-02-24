@@ -8,19 +8,21 @@ import { Cart, CartContextType } from "@/types/interfaces";
 import { useMutation, useQuery } from "@apollo/client";
 import { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
-
+import { useAuth } from "./AuthContext";
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { data, loading } = useQuery(GET_CART);
   const [addItem] = useMutation(ADD_ITEM);
   const [removeItem] = useMutation(REMOVE_ITEM);
   const [updateQuantity] = useMutation(UPDATE_ITEM_QUANTITY);
+  const { isRegistered } = useAuth();
 
   const [cart, setCart] = useState<Cart | null>(null);
-
+  const { data, loading } = useQuery(GET_CART, {
+    skip: !isRegistered,
+  });
   useEffect(() => {
     if (data?.getCart) {
       setCart(data.getCart);

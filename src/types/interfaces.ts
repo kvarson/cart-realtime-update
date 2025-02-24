@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface Product {
   _id: string;
   title: string;
@@ -47,4 +49,11 @@ export interface CartContextType {
     cartItemId: string,
     quantity: number
   ) => Promise<void>;
+}
+export interface AuthContextType {
+  isRegistered: boolean;
+  setIsRegistered: (isRegistered: boolean) => void;
+}
+export interface AuthProviderProps {
+  children: ReactNode; // Accepts any valid React elements as children
 }
