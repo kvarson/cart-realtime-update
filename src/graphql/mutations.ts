@@ -60,6 +60,10 @@ export const UPDATE_ITEM_QUANTITY = gql`
           _id
           title
           cost
+          availableQuantity
+          isArchived
+          createdAt
+          updatedAt
         }
         quantity
       }
