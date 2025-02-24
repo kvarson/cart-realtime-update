@@ -14,7 +14,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { data, loading, refetch } = useQuery(GET_CART);
+  const { data, loading } = useQuery(GET_CART);
   const [addItem] = useMutation(ADD_ITEM);
   const [removeItem] = useMutation(REMOVE_ITEM);
   const [updateQuantity] = useMutation(UPDATE_ITEM_QUANTITY);
@@ -25,16 +25,31 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     if (data?.getCart) {
       setCart(data.getCart);
     }
+    console.log(data, "DATA");
   }, [data]);
 
-  const addToCart = async (productId: string, quantity: number) => {
+  const addToCart = async (
+    productId: string,
+    quantity: number
+  ): Promise<string | undefined> => {
     try {
-      const { data } = await addItem({ variables: { productId, quantity } });
-      if (data?.addItem) {
-        setCart(data.addItem);
+      const itemExists = cart?.items?.some(
+        (item) => item.product._id === productId
+      );
+
+      if (itemExists) {
+        return "Item already in the Cart";
       }
+      const { data } = await addItem({
+        variables: { productId, quantity },
+      });
+      if (data?.addItem) {
+        setCart(data.addItem.items);
+      }
+      return "Added Item to the Cart";
     } catch (error) {
-      console.error("Error adding to cart:", error);
+      console.log("Error adding item to cart:", error);
+      return "Error adding item to the cart. Please try again.";
     }
   };
 
@@ -48,7 +63,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("Error removing item:", error);
     }
   };
-
   const updateCartItemQuantity = async (
     cartItemId: string,
     quantity: number
@@ -57,11 +71,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       const { data } = await updateQuantity({
         variables: { cartItemId, quantity },
       });
+
       if (data?.updateItemQuantity) {
-        setCart(data.updateItemQuantity);
+        setCart(data.updateItemQuantity); // Update the cart state with the new cart data
       }
     } catch (error) {
-      console.error("Error updating quantity:", error);
+      console.log("inside catch block(should not be)");
+      // console.error("Error updating quantity:", error);
     }
   };
 
