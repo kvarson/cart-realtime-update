@@ -13,10 +13,12 @@ export default function Navigation() {
     <NavigationMenu className='w-full bg-blue-700 shadow-md'>
       <NavigationMenuList className='flex items-center justify-between py-4'>
         <NavigationMenuItem>
-          <Link href='/home'>Home</Link>
+          <Link href='/home'>
+            <p className='underline'>Go to Home</p>
+          </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href='/cart'>Cart</Link>
+          <Link href='/cart'>Go to Cart</Link>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
