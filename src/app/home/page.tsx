@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { GetProductsData, Product } from "@/types/interfaces";
 import Navigation from "@/reusableComponents/navigation";
 import AddToCartButton from "@/reusableComponents/addToCartButton";
-import CartSubscriptionHandler from "../subscriptionHandler/SubscribtionHandler";
+import CartSubscriptionHandler from "../subscriptionHandler/CartSubscribtionHandler";
 export default function Home() {
   const { data, loading, error } = useQuery<GetProductsData>(GET_PRODUCTS);
   const [products, setProducts] = useState<Product[]>([]);
@@ -25,7 +25,7 @@ export default function Home() {
 
   return (
     <div>
-      <div className='w-full container mx-auto px-4 py-8'>
+      <div className='w-100vw flex flex-col items-center gap-5 mx-auto p-4 text-center'>
         <CartSubscriptionHandler />
         <Navigation></Navigation>
       </div>

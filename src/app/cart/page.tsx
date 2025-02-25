@@ -8,7 +8,7 @@ import {
 } from "../validations/validation";
 import { Button } from "@/components/ui/button";
 import Navigation from "@/reusableComponents/navigation";
-import CartSubscriptionHandler from "../subscriptionHandler/SubscribtionHandler";
+import CartSubscriptionHandler from "../subscriptionHandler/CartSubscribtionHandler";
 
 const CartPage: React.FC = () => {
   const { cart, removeFromCart, updateCartItemQuantity, loading } = useCart();
@@ -76,9 +76,9 @@ const CartPage: React.FC = () => {
   if (loading) return <p>Loading cart...</p>;
   if (!cart || cart?.items?.length === 0) {
     return (
-      <div className='container mx-auto p-4 text-center'>
+      <div className='flex flex-col items-center gap-5 mx-auto p-4 text-center'>
         <CartSubscriptionHandler />
-        <Navigation />
+        <Navigation></Navigation>
         <h2 className='text-2xl font-bold'>Your Cart is Empty</h2>
         <p className='mt-2'>Add some products to your cart!</p>
       </div>
@@ -86,111 +86,98 @@ const CartPage: React.FC = () => {
   }
   return (
     <div className='container mx-auto p-4'>
-      <div className='w-full mb-2'>
+      <div className='flex flex-col items-center gap-5 mx-auto p-4 text-center'>
         <CartSubscriptionHandler />
-        <Navigation />
+        <Navigation></Navigation>
       </div>
-      <h2 className='text-3xl font-bold mb-6'>Your Cart</h2>
-      {error && <p className='text-red-500'>{error}</p>}
+      <div className='py-8'>
+        <h2 className='text-3xl font-bold mb-6'>Your Cart</h2>
+        {error && <p className='text-red-500'>{error}</p>}
 
-      <div className='space-y-6'>
-        {cart &&
-          cart.items.map((item: CartItem) => (
-            <div
-              key={item._id}
-              className='flex justify-between items-center p-4 border rounded-md shadow-md'
-            >
-              <div className='flex items-center space-x-4'>
-                <div>
-                  <h3 className='text-lg font-semibold'>
-                    {item.product?.title}
-                  </h3>
-                  <p className='text-gray-600'>
-                    {item.product?.cost.toFixed(2)} USD
-                  </p>
-                  <p className='text-gray-400'>
-                    {item.product?.availableQuantity} in stock
-                  </p>
+        <div className='space-y-6 '>
+          {cart &&
+            cart.items.map((item: CartItem) => (
+              <div
+                key={item._id}
+                className='flex justify-between items-center p-4 border rounded-md shadow-md hover:border-red-500 '
+              >
+                <div className='flex items-center space-x-4 '>
+                  <div>
+                    <h3 className='text-lg font-semibold'>
+                      {item.product?.title}
+                    </h3>
+                    <p className='text-gray-600'>
+                      {item.product?.cost.toFixed(2)} USD
+                    </p>
+                    <p className='text-gray-400'>
+                      {item.product?.availableQuantity} in stock
+                    </p>
+                  </div>
                 </div>
-              </div>
 
-              <div className='flex items-center space-x-2'>
-                <Button
-                  className='px-2 py-1 bg-blue-500 text-white rounded-md'
-                  onClick={() =>
-                    handleUpdateQuantity(
-                      item._id,
-                      item.quantity - 1,
-                      item.product.availableQuantity
-                    )
-                  }
-                  disabled={item.quantity <= 1}
-                >
-                  -
-                </Button>
-
-                <input
-                  type='number'
-                  value={item.quantity}
-                  min='1'
-                  max={item.product.availableQuantity}
-                  onChange={(e) => {
-                    const newQuantity = parseInt(e.target.value, 10);
-                    if (!isNaN(newQuantity)) {
+                <div className='flex items-center space-x-2'>
+                  <Button
+                    className='px-2 py-1 bg-blue-500 text-white rounded-md'
+                    onClick={() =>
                       handleUpdateQuantity(
                         item._id,
-                        newQuantity,
+                        item.quantity - 1,
                         item.product.availableQuantity
-                      );
+                      )
                     }
-                  }}
-                  className='w-16 text-center border rounded-md'
-                />
-                {updateValidationError && (
-                  <p className='text-red-500'>{updateValidationError}</p>
-                )}
-                <Button
-                  className='px-2 py-1 bg-blue-500 text-white rounded-md'
-                  onClick={() =>
-                    handleUpdateQuantity(
-                      item._id,
-                      item.quantity + 1,
-                      item.product.availableQuantity
-                    )
-                  }
-                  disabled={item.quantity - 2 >= item.product.availableQuantity}
-                >
-                  +
-                </Button>
+                    disabled={item.quantity <= 1}
+                  >
+                    -
+                  </Button>
+                  <div className='w-16 text-center border border-blue-500/90 rounded-md'>
+                    {item.quantity}
+                  </div>
+                  {updateValidationError && (
+                    <p className='text-red-500'>{updateValidationError}</p>
+                  )}
+                  <Button
+                    className='px-2 py-1 bg-blue-500 text-white rounded-md'
+                    onClick={() =>
+                      handleUpdateQuantity(
+                        item._id,
+                        item.quantity + 1,
+                        item.product.availableQuantity
+                      )
+                    }
+                    disabled={item.quantity >= item.product.availableQuantity}
+                  >
+                    +
+                  </Button>
 
-                {deleteValidationError && (
-                  <p className='text-red-500'>{deleteValidationError}</p>
-                )}
-                <Button
-                  className='px-3 py-1 bg-red-500 text-white rounded-md'
-                  disabled={loadingRemove}
-                  onClick={() => handleRemoveItem(item._id)}
-                >
-                  Remove
-                </Button>
+                  {deleteValidationError && (
+                    <p className='text-red-500'>{deleteValidationError}</p>
+                  )}
+                  <Button
+                    className='px-3 py-1 bg-red-500 text-white rounded-md'
+                    disabled={loadingRemove}
+                    onClick={() => handleRemoveItem(item._id)}
+                  >
+                    Remove
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
-      </div>
+            ))}
+        </div>
 
-      <div className='mt-6 flex justify-between items-center'>
-        <div className='text-right'>
-          <h3 className='text-lg font-semibold'>Total: </h3>
-          <p className='text-2xl font-bold'>
-            {cart.items
-              .reduce(
-                (total, item: CartItem) =>
-                  total + item.product.cost * item.quantity,
-                0
-              )
-              .toFixed(2)}{" "}
-            USD
-          </p>
+        <div className='mt-6 flex justify-between items-center'>
+          <div className='text-right flex items-center gap-2'>
+            <h3 className='text-lg font-semibold'>Total: </h3>
+            <p className='text-lg font-bold'>
+              {cart.items
+                .reduce(
+                  (total, item: CartItem) =>
+                    total + item.product.cost * item.quantity,
+                  0
+                )
+                .toFixed(2)}{" "}
+              USD
+            </p>
+          </div>
         </div>
       </div>
     </div>

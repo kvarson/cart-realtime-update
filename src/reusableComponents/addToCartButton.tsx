@@ -45,7 +45,11 @@ const AddToCartButton: React.FC<AddToCartProps> = ({ productId, quantity }) => {
   return (
     <div>
       <div className='space-y-2'>
-        <Button disabled={loading} onClick={handleAddToCart}>
+        <Button
+          className='text-white'
+          disabled={loading}
+          onClick={handleAddToCart}
+        >
           Add To Cart
         </Button>
         {error && <p className='text-red-500 text-sm'>{error}</p>}
