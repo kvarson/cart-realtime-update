@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import { useQuery, useMutation, gql } from "@apollo/client";
-import { Button } from "@/components/ui/button";
+import { useQuery } from "@apollo/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GET_PRODUCTS } from "@/graphql/queries";
 import { useEffect, useState } from "react";

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useCart } from "../stateManagement/CartContext"; // Adjust the import path as needed
 import { CartItem } from "@/types/interfaces";
 import {
@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Navigation from "@/reusableComponents/navigation";
 import CartSubscriptionHandler from "../subscriptionHandler/CartSubscribtionHandler";
+import CheckoutButton from "@/reusableComponents/CheckoutButton";
 
 const CartPage: React.FC = () => {
   const { cart, removeFromCart, updateCartItemQuantity, loading } = useCart();
@@ -162,6 +163,9 @@ const CartPage: React.FC = () => {
                 </div>
               </div>
             ))}
+        </div>
+        <div className='mt-5'>
+          <CheckoutButton />
         </div>
 
         <div className='mt-6 flex justify-between items-center'>

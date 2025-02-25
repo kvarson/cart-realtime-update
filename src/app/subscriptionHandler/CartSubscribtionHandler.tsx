@@ -1,31 +1,32 @@
 import { useCart } from "../stateManagement/CartContext";
 import { useSubscription } from "@apollo/client";
 import { CART_ITEM_UPDATE } from "@/graphql/subscriptions"; // Your GraphQL subscription query
-import { CartItem } from "@/types/interfaces";
 import { useState } from "react";
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogTitle,
-  DialogDescription,
   DialogClose,
 } from "@/components/ui/dialog";
 const CartSubscriptionHandler = () => {
-  const { cart, updateCartItem, refetch } = useCart();
+  const { cart, updateCartItem, refetch, setAgreedToChanges } = useCart();
   const [messages, setMessages] = useState<string[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
 
   useSubscription(CART_ITEM_UPDATE, {
     onSubscriptionData: async ({ subscriptionData }) => {
-      if (!subscriptionData) return;
+      if (!subscriptionData?.data?.cartItemUpdate) return;
 
       console.log(subscriptionData, "SUBSCRIPTION DATA");
       const { event, payload } = subscriptionData.data.cartItemUpdate;
-
+      if (!payload?._id) {
+        console.warn("Missing payload ID in subscription");
+        return;
+      }
       let newMessage = "";
-      const itemTitle = cart?.items.find((item) => item._id === payload._id)
-        ?.product.title;
+      const itemTitle = cart?.items?.find((item) => item._id === payload._id)
+        ?.product?.title;
 
       if (event === "ITEM_OUT_OF_STOCK") {
         newMessage = `${
@@ -45,6 +46,9 @@ const CartSubscriptionHandler = () => {
 
       refetch();
     },
+    onError: (error) => {
+      console.error("Subscription error:", error);
+    },
   });
 
   if (!messages.length) return null;
@@ -60,7 +64,9 @@ const CartSubscriptionHandler = () => {
             ))}
           </ul>
         </div>
-        <DialogClose onClick={() => setMessages([])}>Close</DialogClose>
+        <DialogClose onClick={() => setAgreedToChanges(true)}>
+          I Agree
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );

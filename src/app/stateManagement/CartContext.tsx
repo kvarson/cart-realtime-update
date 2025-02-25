@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import { useAuth } from "./AuthContext";
+import { usePathname } from "next/navigation";
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -19,8 +20,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   const [updateQuantity] = useMutation(UPDATE_ITEM_QUANTITY);
   const { isRegistered } = useAuth();
   const [cart, setCart] = useState<Cart | null>(null);
+
+  const [agreedToChanges, setAgreedToChanges] = useState(true);
+
+  const pathname = usePathname();
   const { data, loading, refetch } = useQuery(GET_CART, {
-    skip: !isRegistered,
+    skip: !isRegistered || pathname === "/checkout",
   });
   useEffect(() => {
     if (data?.getCart) {
@@ -91,6 +96,24 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       return { ...prevCart, items: updatedItems };
     });
   };
+
+  const clearCartItems = async () => {
+    if (cart?.items?.length) {
+      try {
+        cart?.items?.map(async (item) => {
+          if (item._id) {
+            await removeFromCart(item._id);
+          }
+        });
+        refetch();
+        console.log("All items have been removed from the cart.");
+      } catch (error) {
+        console.log("Error clearing the cart:", error);
+      }
+    } else {
+      console.log("Cart is already empty.");
+    }
+  };
   return (
     <CartContext.Provider
       value={{
@@ -101,6 +124,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         updateCartItem,
         updateCartItemQuantity,
         refetch,
+        setAgreedToChanges,
+        agreedToChanges,
+        clearCartItems,
       }}
     >
       {children}

@@ -51,6 +51,9 @@ export interface CartContextType {
   ) => Promise<void>;
   updateCartItem: (cartItemId: string, quantity: number) => void;
   refetch: () => any;
+  setAgreedToChanges: (registered: boolean) => void;
+  agreedToChanges: boolean;
+  clearCartItems: () => Promise<void>;
 }
 
 export enum CartItemEvent {
