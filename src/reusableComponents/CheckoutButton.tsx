@@ -12,6 +12,7 @@ const CheckoutButton: React.FC = () => {
     if (!agreedToChanges) {
       return;
     }
+    sessionStorage.setItem("canProceedToCheckout", "true");
     router.push("/checkout");
   };
   return (
