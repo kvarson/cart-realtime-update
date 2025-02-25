@@ -43,17 +43,8 @@ const CartPage: React.FC = () => {
   const handleUpdateQuantity = (
     cartItemId: string,
     quantity: number,
-    availableQuantity: number,
-    item: CartItem
+    availableQuantity: number
   ) => {
-    console.log(availableQuantity, "availableQuantity");
-    console.log(quantity, "quantity");
-    console.log(item, "CartItem");
-    if (quantity <= 0) {
-      setUpdateValidationError("Quantity must be greater than zero");
-      return;
-    }
-
     if (availableQuantity < quantity) {
       return;
     }
@@ -76,6 +67,7 @@ const CartPage: React.FC = () => {
       updateCartItemQuantity(cartItemId, quantity);
       setUpdateValidationError("");
     } catch (error) {
+      console.log(error);
       setError("Failed to update quantity");
     }
   };
@@ -125,9 +117,8 @@ const CartPage: React.FC = () => {
                   onClick={() =>
                     handleUpdateQuantity(
                       item._id,
-                      item.quantity,
-                      item.product.availableQuantity,
-                      item
+                      item.quantity - 1,
+                      item.product.availableQuantity
                     )
                   }
                   disabled={item.quantity <= 1}
@@ -146,8 +137,7 @@ const CartPage: React.FC = () => {
                       handleUpdateQuantity(
                         item._id,
                         newQuantity,
-                        item.product.availableQuantity,
-                        item
+                        item.product.availableQuantity
                       );
                     }
                   }}
@@ -161,12 +151,11 @@ const CartPage: React.FC = () => {
                   onClick={() =>
                     handleUpdateQuantity(
                       item._id,
-                      item.quantity,
-                      item.product.availableQuantity,
-                      item
+                      item.quantity + 1,
+                      item.product.availableQuantity
                     )
                   }
-                  disabled={item.quantity - 1 >= item.product.availableQuantity} // Prevent increasing beyond stock
+                  disabled={item.quantity - 2 >= item.product.availableQuantity}
                 >
                   +
                 </Button>
