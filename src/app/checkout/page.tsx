@@ -11,7 +11,7 @@ const Checkout = () => {
     const canAccess = sessionStorage.getItem("canProceedToCheckout") === "true";
 
     if (!canAccess) {
-      router.replace("/"); // Redirect to home or another page
+      router.replace("/");
     } else {
       setIsAllowed(true);
     }

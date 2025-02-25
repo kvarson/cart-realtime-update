@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogClose,
+  DialogDescription,
 } from "@/components/ui/dialog";
 const CartSubscriptionHandler = () => {
   const { cart, updateCartItem, refetch, setAgreedToChanges } = useCart();
@@ -57,6 +58,9 @@ const CartSubscriptionHandler = () => {
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent>
         <DialogTitle>Cart Updates</DialogTitle>
+        <DialogDescription>
+          There has been a changes to your cart items
+        </DialogDescription>
         <div>
           <ul>
             {messages.map((msg, index) => (
