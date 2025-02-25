@@ -18,17 +18,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   const [removeItem] = useMutation(REMOVE_ITEM);
   const [updateQuantity] = useMutation(UPDATE_ITEM_QUANTITY);
   const { isRegistered } = useAuth();
-
   const [cart, setCart] = useState<Cart | null>(null);
-  const { data, loading } = useQuery(GET_CART, {
+  const { data, loading, refetch } = useQuery(GET_CART, {
     skip: !isRegistered,
   });
   useEffect(() => {
     if (data?.getCart) {
       setCart(data.getCart);
     }
-    console.log(data, "DATA");
-  }, [cart?.items, data]);
+  }, [data]);
 
   const addToCart = async (
     productId: string,
@@ -46,7 +44,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         variables: { productId, quantity },
       });
       if (data?.addItem) {
-        setCart(data.addItem.items);
+        setCart(data.addItem);
       }
       return "Added Item to the Cart";
     } catch (error) {
@@ -54,7 +52,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
       return "Error adding item to the cart. Please try again.";
     }
   };
-
   const removeFromCart = async (cartItemId: string) => {
     try {
       const { data } = await removeItem({ variables: { cartItemId } });
@@ -78,11 +75,22 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         setCart(data.updateItemQuantity); // Update the cart state with the new cart data
       }
     } catch (error) {
-      console.log("inside catch block(should not be)");
+      console.log(error);
       // console.error("Error updating quantity:", error);
     }
   };
 
+  const updateCartItem = async (itemId: string, quantity: number) => {
+    setCart((prevCart) => {
+      if (!prevCart) return prevCart;
+
+      const updatedItems = prevCart.items.map((item) =>
+        item._id === itemId ? { ...item, quantity } : item
+      );
+
+      return { ...prevCart, items: updatedItems };
+    });
+  };
   return (
     <CartContext.Provider
       value={{
@@ -90,7 +98,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         loading,
         addToCart,
         removeFromCart,
+        updateCartItem,
         updateCartItemQuantity,
+        refetch,
       }}
     >
       {children}

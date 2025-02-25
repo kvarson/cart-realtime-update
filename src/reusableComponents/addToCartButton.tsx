@@ -39,7 +39,7 @@ const AddToCartButton: React.FC<AddToCartProps> = ({ productId, quantity }) => {
   useEffect(() => {
     setTimeout(() => {
       setDisplayAddedMessage("");
-    }, 1500);
+    }, 350);
   }, [displayAddedMessage]);
 
   return (
