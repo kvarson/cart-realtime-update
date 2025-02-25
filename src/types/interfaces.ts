@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface Product {
   _id: string;
   title: string;
@@ -16,20 +18,14 @@ export interface GetProductsData {
 }
 export interface AddToCartProps {
   productId: string;
-  availableQuantity: number;
+  quantity: number;
   children?: React.ReactNode;
 }
 
 export interface CartItem {
   _id: string;
   cartId: string;
-  product: {
-    _id: string;
-    title: string;
-    cost: number;
-    availableQuantity: number;
-    isArchived: boolean;
-  };
+  product: Product;
   quantity: number;
   updatedAt: string;
   addedAt: string;
@@ -44,10 +40,20 @@ export interface Cart {
 export interface CartContextType {
   cart: Cart | null;
   loading: boolean;
-  addToCart: (productId: string, quantity: number) => Promise<void>;
+  addToCart: (
+    productId: string,
+    quantity: number
+  ) => Promise<string | undefined>;
   removeFromCart: (cartItemId: string) => Promise<void>;
   updateCartItemQuantity: (
     cartItemId: string,
     quantity: number
   ) => Promise<void>;
+}
+export interface AuthContextType {
+  isRegistered: boolean;
+  setIsRegistered: (isRegistered: boolean) => void;
+}
+export interface AuthProviderProps {
+  children: ReactNode; // Accepts any valid React elements as children
 }

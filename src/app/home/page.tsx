@@ -39,12 +39,12 @@ export default function Home() {
                 <p>Cost: ${product.cost}</p>
                 <p>Available: {product.availableQuantity}</p>
                 <p>Status: {product.isArchived ? "Archived" : "Active"}</p>
-                <AddToCartButton
-                  productId={product._id}
-                  availableQuantity={product.availableQuantity}
-                >
-                  Add To Cart
-                </AddToCartButton>
+                {product.availableQuantity && (
+                  <AddToCartButton productId={product._id} quantity={1}>
+                    Add To Cart
+                  </AddToCartButton>
+                )}
+                {!product.availableQuantity && <p>Product out of stock</p>}
               </CardContent>
             </Card>
           ))}

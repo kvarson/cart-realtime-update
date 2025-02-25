@@ -1,37 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cartAddItemSchema } from "@/app/validations/validation";
 import { AddToCartProps } from "@/types/interfaces";
-import { useCart } from "@/app/cartStateManagement/CartContext";
+import { useCart } from "@/app/stateManagement/CartContext";
 
-const AddToCartButton: React.FC<AddToCartProps> = ({
-  productId,
-  availableQuantity,
-}) => {
+const AddToCartButton: React.FC<AddToCartProps> = ({ productId, quantity }) => {
   const [error, setError] = useState<string | null>(null);
+  const [displayAddedMessage, setDisplayAddedMessage] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const { addToCart, cart } = useCart();
-  const handleAddToCart = () => {
-    const validationResult = cartAddItemSchema.safeParse({
-      productId,
-      quantity: availableQuantity,
-    });
-    if (!validationResult.success) {
-      setError(validationResult.error.errors[0].message);
-      return;
-    }
+  const handleAddToCart = async () => {
+    try {
+      setLoading(true);
+      const validationResult = cartAddItemSchema.safeParse({
+        productId,
+        quantity,
+      });
+      if (!validationResult.success) {
+        setError(validationResult.error.errors[0].message);
+        return;
+      }
 
-    setError(null);
-    addToCart(productId, availableQuantity);
-    console.log(cart, ":CARTTTT");
-    console.log("Adding to cart:", { productId, availableQuantity });
+      setError(null);
+      const message: any = await addToCart(productId, quantity);
+      if (message) {
+        setLoading(false);
+      }
+      console.log(message, "message");
+      setDisplayAddedMessage(message);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
   };
 
+  useEffect(() => {
+    setTimeout(() => {
+      setDisplayAddedMessage("");
+    }, 1500);
+  }, [displayAddedMessage]);
+
   return (
-    <div className='space-y-2'>
-      <Button onClick={handleAddToCart}>Add To Cart</Button>
-      {error && <p className='text-red-500 text-sm'>{error}</p>}
+    <div>
+      <div className='space-y-2'>
+        <Button disabled={loading} onClick={handleAddToCart}>
+          Add To Cart
+        </Button>
+        {error && <p className='text-red-500 text-sm'>{error}</p>}
+      </div>
+      {displayAddedMessage && (
+        <p className='text-red-500 text-sm'>{displayAddedMessage}</p>
+      )}
     </div>
   );
 };

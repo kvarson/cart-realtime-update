@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (pathname.startsWith("/api/graphql")) {
+  if (pathname.startsWith("/api")) {
     const token = req.cookies.get("token")?.value;
 
     if (!token) {
