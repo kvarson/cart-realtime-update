@@ -8,6 +8,7 @@ import {
 } from "../validations/validation";
 import { Button } from "@/components/ui/button";
 import Navigation from "@/reusableComponents/navigation";
+import CartSubscriptionHandler from "../subscriptionHandler/SubscribtionHandler";
 
 const CartPage: React.FC = () => {
   const { cart, removeFromCart, updateCartItemQuantity, loading } = useCart();
@@ -76,7 +77,8 @@ const CartPage: React.FC = () => {
   if (!cart || cart?.items?.length === 0) {
     return (
       <div className='container mx-auto p-4 text-center'>
-        <Navigation></Navigation>
+        <CartSubscriptionHandler />
+        <Navigation />
         <h2 className='text-2xl font-bold'>Your Cart is Empty</h2>
         <p className='mt-2'>Add some products to your cart!</p>
       </div>
@@ -85,7 +87,8 @@ const CartPage: React.FC = () => {
   return (
     <div className='container mx-auto p-4'>
       <div className='w-full mb-2'>
-        <Navigation></Navigation>
+        <CartSubscriptionHandler />
+        <Navigation />
       </div>
       <h2 className='text-3xl font-bold mb-6'>Your Cart</h2>
       {error && <p className='text-red-500'>{error}</p>}

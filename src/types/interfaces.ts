@@ -49,7 +49,9 @@ export interface CartContextType {
     cartItemId: string,
     quantity: number
   ) => Promise<void>;
+  updateCartItem: (cartItemId: string, quantity: number) => void;
 }
+
 export interface AuthContextType {
   isRegistered: boolean;
   setIsRegistered: (isRegistered: boolean) => void;
