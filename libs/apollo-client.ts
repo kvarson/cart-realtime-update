@@ -30,8 +30,6 @@ const wsLink = new GraphQLWsLink(
 
 const authLink = setContext(async (_, { headers }) => {
   const token = Cookies.get("token") || "";
-  console.log("token,", token);
-
   return {
     headers: {
       ...headers,
@@ -44,7 +42,6 @@ const httpLinkWithAuth = from([authLink, httpLink]);
 const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
-    console.log("Definition:", definition);
     return (
       definition.kind === "OperationDefinition" &&
       definition.operation === "subscription"
