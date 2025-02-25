@@ -50,6 +50,12 @@ export interface CartContextType {
     quantity: number
   ) => Promise<void>;
   updateCartItem: (cartItemId: string, quantity: number) => void;
+  refetch: () => any;
+}
+
+export enum CartItemEvent {
+  ITEM_QUANTITY_UPDATED,
+  ITEM_OUT_OF_STOCK,
 }
 
 export interface AuthContextType {

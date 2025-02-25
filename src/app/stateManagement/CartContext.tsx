@@ -19,14 +19,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   const [updateQuantity] = useMutation(UPDATE_ITEM_QUANTITY);
   const { isRegistered } = useAuth();
   const [cart, setCart] = useState<Cart | null>(null);
-  const { data, loading } = useQuery(GET_CART, {
+  const { data, loading, refetch } = useQuery(GET_CART, {
     skip: !isRegistered,
   });
   useEffect(() => {
     if (data?.getCart) {
       setCart(data.getCart);
     }
-  }, [cart?.items, data]);
+  }, [data]);
 
   const addToCart = async (
     productId: string,
@@ -44,7 +44,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         variables: { productId, quantity },
       });
       if (data?.addItem) {
-        setCart(data.addItem.items);
+        setCart(data.addItem);
       }
       return "Added Item to the Cart";
     } catch (error) {
@@ -100,6 +100,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
         removeFromCart,
         updateCartItem,
         updateCartItemQuantity,
+        refetch,
       }}
     >
       {children}

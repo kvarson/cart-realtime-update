@@ -11,9 +11,10 @@ import {
   DialogDescription,
   DialogClose,
 } from "@/components/ui/dialog";
+import client from "../../../libs/apollo-client";
 
 const CartSubscriptionHandler = () => {
-  const { cart, updateCartItem } = useCart();
+  const { cart, updateCartItem, refetch } = useCart();
 
   const [messageFromSubscription, setMessageFromSubscription] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
@@ -22,6 +23,8 @@ const CartSubscriptionHandler = () => {
     onSubscriptionData: async ({ subscriptionData }) => {
       if (subscriptionData) {
         const { event, payload } = subscriptionData.data.cartItemUpdate;
+
+        console.log(event, "event");
         console.log(subscriptionData, "SUBSCRIPTION DATA");
 
         if (event === "ITEM_OUT_OF_STOCK") {
@@ -40,7 +43,6 @@ const CartSubscriptionHandler = () => {
           );
 
           const cartItemTitle = cartItem?.product.title;
-          console.log(cartItem, "cartItem");
           if (cartItem) {
             updateCartItem(payload._id, payload.quantity);
             setMessageFromSubscription(
@@ -49,11 +51,13 @@ const CartSubscriptionHandler = () => {
             setOpenDialog(true);
           }
         }
+
+        refetch();
       }
     },
   });
 
-  if (loading) return <p>Loading...</p>; //using while developing
+  if (loading) return <p>Loading...</p>; // using while developing
   if (error) return <p>Error: {error.message}</p>;
 
   return (
