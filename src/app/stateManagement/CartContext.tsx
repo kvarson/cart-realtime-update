@@ -80,14 +80,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const updateCartItem = async (itemId: string, quantity: number) => {
+  const updateCartItem = (itemId: string, quantity: number) => {
     setCart((prevCart) => {
       if (!prevCart) return prevCart;
 
       const updatedItems = prevCart.items.map((item) =>
         item._id === itemId ? { ...item, quantity } : item
       );
-
+      console.log(updatedItems, "inside update");
       return { ...prevCart, items: updatedItems };
     });
   };
